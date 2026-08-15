@@ -1,18 +1,17 @@
 :root {
-    --bg: #f5f5f3;
-    --surface: #ffffff;
-    --surface-alt: #eeeeeb;
-    --text: #171717;
-    --muted: #6f6f6b;
-    --border: #d8d8d3;
+    --bg: #121413;
+    --surface: #191b1a;
+    --surface-alt: #222523;
+    --text: #eeeeeb;
+    --muted: #969b97;
+    --border: #303431;
 
-    --green: #16794a;
-    --green-light: #e5f2eb;
+    --green: #48b77d;
+    --green-dark: #359565;
 
-    --red: #b83b3b;
-    --red-light: #f7e8e8;
+    --red: #e26767;
 
-    --shadow: 0 12px 35px rgba(0, 0, 0, 0.06);
+    --shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
 }
 
 * {
@@ -32,6 +31,7 @@ body {
         BlinkMacSystemFont,
         "Segoe UI",
         sans-serif;
+
     background: var(--bg);
     color: var(--text);
     line-height: 1.5;
@@ -62,13 +62,6 @@ a {
     margin: 0 auto;
 }
 
-.eyebrow {
-    color: var(--green);
-    font-size: 0.72rem;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-}
-
 /* =========================
    NAVBAR
 ========================= */
@@ -78,7 +71,7 @@ a {
     top: 0;
     z-index: 50;
 
-    background: rgba(245, 245, 243, 0.9);
+    background: rgba(18, 20, 19, 0.9);
     border-bottom: 1px solid var(--border);
 
     backdrop-filter: blur(12px);
@@ -109,40 +102,17 @@ nav {
     align-items: center;
     gap: 2rem;
     margin-left: auto;
-    margin-right: 2rem;
 }
 
 nav a {
     color: var(--muted);
     font-size: 0.9rem;
+
     transition: color 0.2s ease;
 }
 
 nav a:hover {
     color: var(--text);
-}
-
-.theme-toggle {
-    width: 38px;
-    height: 38px;
-
-    display: grid;
-    place-items: center;
-
-    border: 1px solid var(--border);
-    background: var(--surface);
-    color: var(--text);
-
-    font-size: 1rem;
-    border-radius: 50%;
-
-    transition:
-        background 0.2s ease,
-        border-color 0.2s ease;
-}
-
-.theme-toggle:hover {
-    background: var(--surface-alt);
 }
 
 /* =========================
@@ -171,6 +141,14 @@ nav a:hover {
     font-weight: 750;
 }
 
+.eyebrow {
+    color: var(--green);
+
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+}
+
 .hero-description {
     max-width: 510px;
     margin: 28px 0 34px;
@@ -189,7 +167,7 @@ nav a:hover {
 
     border: 1px solid var(--green);
     background: var(--green);
-    color: #fff;
+    color: #07140d;
 
     font-size: 0.88rem;
     font-weight: 650;
@@ -200,7 +178,10 @@ nav a:hover {
 }
 
 .primary-btn:hover {
-    background: #12663d;
+    background: var(--green-dark);
+    border-color: var(--green-dark);
+    color: #ffffff;
+
     transform: translateY(-1px);
 }
 
@@ -223,9 +204,11 @@ nav a:hover {
     justify-content: space-between;
 
     padding-bottom: 18px;
+
     border-bottom: 1px solid var(--border);
 
     color: var(--muted);
+
     font-size: 0.68rem;
     font-weight: 700;
     letter-spacing: 0.1em;
@@ -250,6 +233,7 @@ nav a:hover {
 
 .status p {
     margin-top: 5px;
+
     color: var(--muted);
     font-size: 0.88rem;
 }
@@ -261,6 +245,7 @@ nav a:hover {
     justify-content: space-between;
 
     padding: 14px 0;
+
     border-top: 1px solid var(--border);
 
     font-size: 0.85rem;
@@ -284,6 +269,7 @@ nav a:hover {
 .schedule-section,
 .planner-section {
     padding: 90px 0;
+
     border-bottom: 1px solid var(--border);
 }
 
@@ -326,6 +312,7 @@ nav a:hover {
 
 .empty-state {
     padding: 45px 25px;
+
     text-align: center;
 }
 
@@ -363,7 +350,7 @@ nav a:hover {
 
 .secondary-btn:hover {
     background: var(--surface);
-    border-color: #bdbdb7;
+    border-color: #464b48;
 }
 
 /* =========================
@@ -447,6 +434,7 @@ select:focus {
     justify-content: space-between;
 
     padding-bottom: 15px;
+
     border-bottom: 1px solid var(--border);
 }
 
@@ -524,6 +512,7 @@ select:focus {
 .task-form,
 .suggestion-card {
     padding: 32px;
+
     background: var(--surface);
 }
 
@@ -556,6 +545,7 @@ select:focus {
 
 .suggestion-card p:last-child {
     max-width: 470px;
+
     color: var(--muted);
 }
 
@@ -564,7 +554,7 @@ select:focus {
 ========================= */
 
 footer {
-    background: var(--text);
+    background: #0b0c0c;
     color: #fff;
 }
 
@@ -606,9 +596,10 @@ footer {
 .footer-bottom {
     padding: 18px 20px;
 
-    border-top: 1px solid #303030;
+    border-top: 1px solid #242624;
 
     color: #777;
+
     text-align: center;
     font-size: 0.72rem;
 }
@@ -627,7 +618,7 @@ footer {
 
     padding: 20px;
 
-    background: rgba(0, 0, 0, 0.45);
+    background: rgba(0, 0, 0, 0.65);
 }
 
 .modal.hidden {
@@ -641,7 +632,7 @@ footer {
     background: var(--surface);
     border: 1px solid var(--border);
 
-    box-shadow: 0 25px 70px rgba(0, 0, 0, 0.18);
+    box-shadow: 0 25px 70px rgba(0, 0, 0, 0.4);
 }
 
 .modal-header {
@@ -688,7 +679,7 @@ footer {
 }
 
 /* =========================
-   POWER STATUS STATES
+   POWER OFF STATE
 ========================= */
 
 .power-off .status-dot {
@@ -697,43 +688,6 @@ footer {
 
 .power-off .status h2 {
     color: var(--red);
-}
-
-/* =========================
-   DARK MODE
-========================= */
-
-body.dark {
-    --bg: #121413;
-    --surface: #191b1a;
-    --surface-alt: #222523;
-    --text: #eeeeeb;
-    --muted: #969b97;
-    --border: #303431;
-
-    --green: #48b77d;
-    --green-light: #183527;
-
-    --red: #e26767;
-    --red-light: #351d1d;
-
-    --shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
-}
-
-body.dark .navbar {
-    background: rgba(18, 20, 19, 0.9);
-}
-
-body.dark .primary-btn {
-    color: #07140d;
-}
-
-body.dark footer {
-    background: #0b0c0c;
-}
-
-body.dark .footer-bottom {
-    border-color: #242624;
 }
 
 /* =========================
@@ -781,8 +735,10 @@ body.dark .footer-bottom {
     .nav-container {
         height: auto;
         min-height: 65px;
+
         flex-wrap: wrap;
         gap: 15px;
+
         padding: 13px 0;
     }
 
