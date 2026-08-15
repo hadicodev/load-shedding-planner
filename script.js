@@ -17,9 +17,7 @@ const powerStatus = document.getElementById("powerStatus");
 const statusMessage = document.getElementById("statusMessage");
 const nextOutage = document.getElementById("nextOutage");
 const countdown = document.getElementById("countdown");
-const statusCard = document.querySelector(".status-card");
-
-const themeToggle = document.getElementById("themeToggle");
+const statusCard = document.querySelector(".status-card");  
 
 const taskName = document.getElementById("taskName");
 const taskDuration = document.getElementById("taskDuration");
@@ -466,24 +464,6 @@ clearSchedule.addEventListener("click", () => {
     renderSchedule();
     renderTodaySchedule();
     updatePowerStatus();
-});
-
-/* =========================
-   THEME
-========================= */
-
-const savedTheme = localStorage.getItem("loadSheddingTheme");
-
-if (savedTheme === "dark") {
-    document.body.classList.add("dark");
-}
-
-themeToggle.addEventListener("click", () => {
-    document.body.classList.toggle("dark");
-
-    const isDark = document.body.classList.contains("dark");
-
-    localStorage.setItem("loadSheddingTheme", isDark ? "dark" : "light");
 });
 
 /* =========================
