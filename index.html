@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+        <title>LoadShedding — Karachi</title>
+
+        <link rel="stylesheet" href="style.css" />
+    </head>
+
+    <body>
+        <!-- Navbar -->
+        <header class="navbar">
+            <div class="nav-container">
+                <a href="#" class="logo"> Load<span>Shedding</span> </a>
+
+                <nav>
+                    <a href="#home">Home</a>
+                    <a href="#schedule">Schedule</a>
+                    <a href="#planner">Planner</a>
+                </nav>
+
+                <button
+                    class="theme-toggle"
+                    id="themeToggle"
+                    aria-label="Toggle theme"
+                >
+                    ◐
+                </button>
+            </div>
+        </header>
+
+        <main>
+            <!-- Hero -->
+            <section class="hero" id="home">
+                <div class="container hero-content">
+                    <div class="hero-text">
+                        <p class="eyebrow">KARACHI · LOAD-SHEDDING PLANNER</p>
+
+                        <h1>
+                            Plan around<br />
+                            the power cuts.
+                        </h1>
+
+                        <p class="hero-description">
+                            Keep your personal load-shedding schedule in one
+                            place and know when you have power available.
+                        </p>
+
+                        <a href="#schedule" class="primary-btn">
+                            Set up my schedule
+                        </a>
+                    </div>
+
+                    <div class="status-card">
+                        <div class="status-top">
+                            <span>POWER STATUS</span>
+                            <span class="status-dot"></span>
+                        </div>
+
+                        <div class="status">
+                            <h2 id="powerStatus">Power Available</h2>
+                            <p id="statusMessage">
+                                No outage scheduled right now.
+                            </p>
+                        </div>
+
+                        <div class="next-outage">
+                            <span>Next outage</span>
+                            <strong id="nextOutage">—</strong>
+                        </div>
+
+                        <div class="countdown">
+                            <span>Starts in</span>
+                            <strong id="countdown">—</strong>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Today's Schedule -->
+            <section class="today-section">
+                <div class="container">
+                    <div class="section-heading">
+                        <div>
+                            <p class="eyebrow">TODAY</p>
+                            <h2>Today's schedule</h2>
+                        </div>
+
+                        <span id="todayDate"></span>
+                    </div>
+
+                    <div class="timeline" id="todaySchedule">
+                        <div class="empty-state">
+                            <p>No schedule added yet.</p>
+                            <span>Add your load-shedding times below.</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Schedule Setup -->
+            <section class="schedule-section" id="schedule">
+                <div class="container">
+                    <div class="section-heading">
+                        <div>
+                            <p class="eyebrow">YOUR SCHEDULE</p>
+                            <h2>Set up your week</h2>
+                        </div>
+
+                        <button class="secondary-btn" id="clearSchedule">
+                            Clear schedule
+                        </button>
+                    </div>
+
+                    <!-- Area -->
+                    <div class="area-box">
+                        <div>
+                            <label for="area">Your area</label>
+                            <p>
+                                Where do you usually experience load-shedding?
+                            </p>
+                        </div>
+
+                        <input
+                            type="text"
+                            id="area"
+                            placeholder="e.g. Gulshan-e-Iqbal"
+                        />
+                    </div>
+
+                    <!-- Weekly Schedule -->
+                    <div class="week" id="weekSchedule">
+                        <!-- Monday -->
+                        <div class="day">
+                            <div class="day-header">
+                                <h3>Monday</h3>
+                                <button class="add-outage" data-day="monday">
+                                    + Add
+                                </button>
+                            </div>
+
+                            <div class="outages" data-outages="monday">
+                                <p class="no-outages">No outages added.</p>
+                            </div>
+                        </div>
+
+                        <!-- Tuesday -->
+                        <div class="day">
+                            <div class="day-header">
+                                <h3>Tuesday</h3>
+                                <button class="add-outage" data-day="tuesday">
+                                    + Add
+                                </button>
+                            </div>
+
+                            <div class="outages" data-outages="tuesday">
+                                <p class="no-outages">No outages added.</p>
+                            </div>
+                        </div>
+
+                        <!-- Wednesday -->
+                        <div class="day">
+                            <div class="day-header">
+                                <h3>Wednesday</h3>
+                                <button class="add-outage" data-day="wednesday">
+                                    + Add
+                                </button>
+                            </div>
+
+                            <div class="outages" data-outages="wednesday">
+                                <p class="no-outages">No outages added.</p>
+                            </div>
+                        </div>
+
+                        <!-- Thursday -->
+                        <div class="day">
+                            <div class="day-header">
+                                <h3>Thursday</h3>
+                                <button class="add-outage" data-day="thursday">
+                                    + Add
+                                </button>
+                            </div>
+
+                            <div class="outages" data-outages="thursday">
+                                <p class="no-outages">No outages added.</p>
+                            </div>
+                        </div>
+
+                        <!-- Friday -->
+                        <div class="day">
+                            <div class="day-header">
+                                <h3>Friday</h3>
+                                <button class="add-outage" data-day="friday">
+                                    + Add
+                                </button>
+                            </div>
+
+                            <div class="outages" data-outages="friday">
+                                <p class="no-outages">No outages added.</p>
+                            </div>
+                        </div>
+
+                        <!-- Saturday -->
+                        <div class="day">
+                            <div class="day-header">
+                                <h3>Saturday</h3>
+                                <button class="add-outage" data-day="saturday">
+                                    + Add
+                                </button>
+                            </div>
+
+                            <div class="outages" data-outages="saturday">
+                                <p class="no-outages">No outages added.</p>
+                            </div>
+                        </div>
+
+                        <!-- Sunday -->
+                        <div class="day">
+                            <div class="day-header">
+                                <h3>Sunday</h3>
+                                <button class="add-outage" data-day="sunday">
+                                    + Add
+                                </button>
+                            </div>
+
+                            <div class="outages" data-outages="sunday">
+                                <p class="no-outages">No outages added.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Planner -->
+            <section class="planner-section" id="planner">
+                <div class="container">
+                    <div class="section-heading">
+                        <div>
+                            <p class="eyebrow">PLAN AROUND IT</p>
+                            <h2>Get things done while the power is on.</h2>
+                        </div>
+                    </div>
+
+                    <div class="planner-grid">
+                        <div class="task-form">
+                            <label for="taskName"
+                                >What do you need to do?</label
+                            >
+
+                            <input
+                                type="text"
+                                id="taskName"
+                                placeholder="e.g. Charge my laptop"
+                            />
+
+                            <label for="taskDuration"
+                                >How long will it take?</label
+                            >
+
+                            <select id="taskDuration">
+                                <option value="15">15 minutes</option>
+                                <option value="30">30 minutes</option>
+                                <option value="45">45 minutes</option>
+                                <option value="60">1 hour</option>
+                                <option value="90">1 hour 30 minutes</option>
+                                <option value="120">2 hours</option>
+                            </select>
+
+                            <button class="primary-btn" id="planTask">
+                                Find a good time
+                            </button>
+                        </div>
+
+                        <div class="suggestion-card" id="suggestionCard">
+                            <p class="eyebrow">SUGGESTION</p>
+
+                            <h3 id="suggestionTitle">Nothing planned yet.</h3>
+
+                            <p id="suggestionText">
+                                Add a task and we'll find a suitable power
+                                window for it.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer>
+            <div class="container footer-content">
+                <div>
+                    <strong>LoadShedding</strong>
+                    <p>A simple way to plan around power cuts in Karachi.</p>
+                </div>
+
+                <div class="footer-links">
+                    <a href="#home">Home</a>
+                    <a href="#schedule">Schedule</a>
+                    <a href="#planner">Planner</a>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                © 2026 Muhammad Hadi. All rights reserved.
+            </div>
+        </footer>
+
+        <!-- Add Outage Modal -->
+        <div class="modal hidden" id="outageModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div>
+                        <p class="eyebrow">ADD OUTAGE</p>
+                        <h2 id="modalDay">Monday</h2>
+                    </div>
+
+                    <button id="closeModal" class="close-modal">×</button>
+                </div>
+
+                <div class="time-inputs">
+                    <div>
+                        <label for="startTime">Power goes out</label>
+                        <input type="time" id="startTime" />
+                    </div>
+
+                    <div>
+                        <label for="endTime">Power returns</label>
+                        <input type="time" id="endTime" />
+                    </div>
+                </div>
+
+                <button class="primary-btn" id="saveOutage">Add outage</button>
+            </div>
+        </div>
+
+        <script src="script.js"></script>
+    </body>
+</html>
