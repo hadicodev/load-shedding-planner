@@ -67,9 +67,10 @@ a {
 ========================= */
 
 .navbar {
-    position: sticky;
+    position: relative;
     top: 0;
-    z-index: 50;
+    z-index: 1000;
+    height: 60px;
 
     background: rgba(18, 20, 19, 0.9);
     border-bottom: 1px solid var(--border);
@@ -113,6 +114,78 @@ nav a {
 
 nav a:hover {
     color: var(--text);
+}
+
+.hamburger {
+    background: none;
+    border: none;
+    display: none;
+}
+
+.hamburger span {
+    width: 20px;
+    height: 2px;
+    margin: 5px;
+    display: block;
+    background: var(--text);
+    border-radius: 2px;
+    transition: 0.2s ease;
+}
+
+@media (max-width: 768px) {
+    .hamburger {
+        display: block;
+    }
+
+    nav {
+        justify-content: center;
+        align-items: start;
+        position: absolute;
+        flex-direction: column;
+        top: calc(100% + 10px);
+        right: 10px;
+        width: 150px;
+        height: 150px;
+        background-color: rgba(18, 20, 19, 0.9);
+        padding: 4px 8px;
+        border: 1px solid var(--border);
+        gap: 0;
+        transform: translateY(-10px);
+        opacity: 0;
+        pointer-events: none;
+        transition: 0.2s ease;
+    }
+
+    nav a {
+        display: block;
+        color: var(--text);
+        padding: 12px 18px;
+        font-weight: 500;
+        width: 100%;
+        transition: 0.2s ease;
+    }
+
+    nav a:hover {
+        background-color: var(--green-dark);
+    }
+
+    nav.active {
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
+    }
+
+    .hamburger.active span:nth-child(2) {
+        opacity: 0;
+    }
+
+    .hamburger.active span:first-child {
+        transform: translateY(7px) rotate(45deg);
+    }
+
+    .hamburger.active span:last-child {
+        transform: translateY(-7px) rotate(-45deg);
+    }
 }
 
 /* =========================
@@ -740,20 +813,6 @@ footer {
         gap: 15px;
 
         padding: 13px 0;
-    }
-
-    nav {
-        order: 3;
-
-        width: 100%;
-        margin: 0;
-
-        justify-content: space-between;
-        gap: 10px;
-    }
-
-    nav a {
-        font-size: 0.8rem;
     }
 
     .hero {
