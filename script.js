@@ -4,6 +4,9 @@ const closeModal = document.getElementById("closeModal");
 const saveOutage = document.getElementById("saveOutage");
 const modalDay = document.getElementById("modalDay");
 
+const links = document.getElementById("nav");
+const hamburger = document.querySelector(".hamburger");
+
 const startTime = document.getElementById("startTime");
 const endTime = document.getElementById("endTime");
 
@@ -17,7 +20,7 @@ const powerStatus = document.getElementById("powerStatus");
 const statusMessage = document.getElementById("statusMessage");
 const nextOutage = document.getElementById("nextOutage");
 const countdown = document.getElementById("countdown");
-const statusCard = document.querySelector(".status-card");  
+const statusCard = document.querySelector(".status-card");
 
 const taskName = document.getElementById("taskName");
 const taskDuration = document.getElementById("taskDuration");
@@ -25,6 +28,11 @@ const planTask = document.getElementById("planTask");
 
 const suggestionTitle = document.getElementById("suggestionTitle");
 const suggestionText = document.getElementById("suggestionText");
+
+hamburger.addEventListener("click", () => {
+    hamburger.classList.toggle("active");
+    links.classList.toggle("active");
+});
 
 let selectedDay = "";
 
