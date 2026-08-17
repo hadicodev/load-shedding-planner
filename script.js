@@ -30,20 +30,20 @@ const suggestionTitle = document.getElementById("suggestionTitle");
 const suggestionText = document.getElementById("suggestionText");
 
 hamburger.addEventListener("click", () => {
-    hamburger.classList.toggle("active");
-    links.classList.toggle("active");
+  hamburger.classList.toggle("active");
+  links.classList.toggle("active");
 });
 
 let selectedDay = "";
 
 let schedule = JSON.parse(localStorage.getItem("loadSheddingSchedule")) || {
-    monday: [],
-    tuesday: [],
-    wednesday: [],
-    thursday: [],
-    friday: [],
-    saturday: [],
-    sunday: [],
+  monday: [],
+  tuesday: [],
+  wednesday: [],
+  thursday: [],
+  friday: [],
+  saturday: [],
+  sunday: [],
 };
 
 /* =========================
@@ -53,7 +53,7 @@ let schedule = JSON.parse(localStorage.getItem("loadSheddingSchedule")) || {
 areaInput.value = localStorage.getItem("loadSheddingArea") || "";
 
 areaInput.addEventListener("input", () => {
-    localStorage.setItem("loadSheddingArea", areaInput.value);
+  localStorage.setItem("loadSheddingArea", areaInput.value);
 });
 
 /* =========================
@@ -61,17 +61,17 @@ areaInput.addEventListener("input", () => {
 ========================= */
 
 addButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-        selectedDay = button.dataset.day;
+  button.addEventListener("click", () => {
+    selectedDay = button.dataset.day;
 
-        modalDay.textContent =
-            selectedDay.charAt(0).toUpperCase() + selectedDay.slice(1);
+    modalDay.textContent =
+      selectedDay.charAt(0).toUpperCase() + selectedDay.slice(1);
 
-        startTime.value = "";
-        endTime.value = "";
+    startTime.value = "";
+    endTime.value = "";
 
-        modal.classList.remove("hidden");
-    });
+    modal.classList.remove("hidden");
+  });
 });
 
 /* =========================
@@ -79,13 +79,13 @@ addButtons.forEach((button) => {
 ========================= */
 
 closeModal.addEventListener("click", () => {
-    modal.classList.add("hidden");
+  modal.classList.add("hidden");
 });
 
 modal.addEventListener("click", (event) => {
-    if (event.target === modal) {
-        modal.classList.add("hidden");
-    }
+  if (event.target === modal) {
+    modal.classList.add("hidden");
+  }
 });
 
 /* =========================
@@ -93,30 +93,30 @@ modal.addEventListener("click", (event) => {
 ========================= */
 
 saveOutage.addEventListener("click", () => {
-    if (!startTime.value || !endTime.value) {
-        alert("Please enter both times.");
-        return;
-    }
+  if (!startTime.value || !endTime.value) {
+    alert("Please enter both times.");
+    return;
+  }
 
-    if (startTime.value >= endTime.value) {
-        alert("Power return time must be after the outage start time.");
-        return;
-    }
+  if (startTime.value >= endTime.value) {
+    alert("Power return time must be after the outage start time.");
+    return;
+  }
 
-    schedule[selectedDay].push({
-        start: startTime.value,
-        end: endTime.value,
-    });
+  schedule[selectedDay].push({
+    start: startTime.value,
+    end: endTime.value,
+  });
 
-    schedule[selectedDay].sort((a, b) => a.start.localeCompare(b.start));
+  schedule[selectedDay].sort((a, b) => a.start.localeCompare(b.start));
 
-    saveSchedule();
+  saveSchedule();
 
-    modal.classList.add("hidden");
+  modal.classList.add("hidden");
 
-    renderSchedule();
-    renderTodaySchedule();
-    updatePowerStatus();
+  renderSchedule();
+  renderTodaySchedule();
+  updatePowerStatus();
 });
 
 /* =========================
@@ -124,7 +124,7 @@ saveOutage.addEventListener("click", () => {
 ========================= */
 
 function saveSchedule() {
-    localStorage.setItem("loadSheddingSchedule", JSON.stringify(schedule));
+  localStorage.setItem("loadSheddingSchedule", JSON.stringify(schedule));
 }
 
 /* =========================
@@ -132,30 +132,30 @@ function saveSchedule() {
 ========================= */
 
 function renderSchedule() {
-    const days = Object.keys(schedule);
+  const days = Object.keys(schedule);
 
-    days.forEach((day) => {
-        const container = document.querySelector(`[data-outages="${day}"]`);
+  days.forEach((day) => {
+    const container = document.querySelector(`[data-outages="${day}"]`);
 
-        container.innerHTML = "";
+    container.innerHTML = "";
 
-        if (schedule[day].length === 0) {
-            const empty = document.createElement("p");
+    if (schedule[day].length === 0) {
+      const empty = document.createElement("p");
 
-            empty.className = "no-outages";
-            empty.textContent = "No outages added.";
+      empty.className = "no-outages";
+      empty.textContent = "No outages added.";
 
-            container.appendChild(empty);
+      container.appendChild(empty);
 
-            return;
-        }
+      return;
+    }
 
-        schedule[day].forEach((outage, index) => {
-            const outageElement = document.createElement("div");
+    schedule[day].forEach((outage, index) => {
+      const outageElement = document.createElement("div");
 
-            outageElement.className = "outage";
+      outageElement.className = "outage";
 
-            outageElement.innerHTML = `
+      outageElement.innerHTML = `
                 <span class="outage-time">
                     ${formatTime(outage.start)} – ${formatTime(outage.end)}
                 </span>
@@ -170,11 +170,11 @@ function renderSchedule() {
                 </button>
             `;
 
-            container.appendChild(outageElement);
-        });
+      container.appendChild(outageElement);
     });
+  });
 
-    addDeleteListeners();
+  addDeleteListeners();
 }
 
 /* =========================
@@ -182,22 +182,22 @@ function renderSchedule() {
 ========================= */
 
 function addDeleteListeners() {
-    const deleteButtons = document.querySelectorAll(".delete-outage");
+  const deleteButtons = document.querySelectorAll(".delete-outage");
 
-    deleteButtons.forEach((button) => {
-        button.addEventListener("click", () => {
-            const day = button.dataset.day;
-            const index = Number(button.dataset.index);
+  deleteButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const day = button.dataset.day;
+      const index = Number(button.dataset.index);
 
-            schedule[day].splice(index, 1);
+      schedule[day].splice(index, 1);
 
-            saveSchedule();
+      saveSchedule();
 
-            renderSchedule();
-            renderTodaySchedule();
-            updatePowerStatus();
-        });
+      renderSchedule();
+      renderTodaySchedule();
+      updatePowerStatus();
     });
+  });
 }
 
 /* =========================
@@ -205,15 +205,15 @@ function addDeleteListeners() {
 ========================= */
 
 function formatTime(time) {
-    const [hours, minutes] = time.split(":");
+  const [hours, minutes] = time.split(":");
 
-    let hour = Number(hours);
+  let hour = Number(hours);
 
-    const suffix = hour >= 12 ? "PM" : "AM";
+  const suffix = hour >= 12 ? "PM" : "AM";
 
-    hour = hour % 12 || 12;
+  hour = hour % 12 || 12;
 
-    return `${hour}:${minutes} ${suffix}`;
+  return `${hour}:${minutes} ${suffix}`;
 }
 
 /* =========================
@@ -221,13 +221,13 @@ function formatTime(time) {
 ========================= */
 
 function updateDate() {
-    const date = new Date();
+  const date = new Date();
 
-    todayDate.textContent = date.toLocaleDateString("en-PK", {
-        weekday: "long",
-        day: "numeric",
-        month: "long",
-    });
+  todayDate.textContent = date.toLocaleDateString("en-PK", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+  });
 }
 
 /* =========================
@@ -235,17 +235,17 @@ function updateDate() {
 ========================= */
 
 function getTodayName() {
-    const days = [
-        "sunday",
-        "monday",
-        "tuesday",
-        "wednesday",
-        "thursday",
-        "friday",
-        "saturday",
-    ];
+  const days = [
+    "sunday",
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+  ];
 
-    return days[new Date().getDay()];
+  return days[new Date().getDay()];
 }
 
 /* =========================
@@ -253,44 +253,44 @@ function getTodayName() {
 ========================= */
 
 function renderTodaySchedule() {
-    const today = getTodayName();
+  const today = getTodayName();
 
-    const outages = schedule[today];
+  const outages = schedule[today];
 
-    todaySchedule.innerHTML = "";
+  todaySchedule.innerHTML = "";
 
-    if (outages.length === 0) {
-        todaySchedule.innerHTML = `
+  if (outages.length === 0) {
+    todaySchedule.innerHTML = `
             <div class="empty-state">
                 <p>No outages scheduled today.</p>
                 <span>Enjoy the power while it lasts.</span>
             </div>
         `;
 
-        return;
-    }
+    return;
+  }
 
-    outages.forEach((outage) => {
-        const item = document.createElement("div");
+  outages.forEach((outage) => {
+    const item = document.createElement("div");
 
-        item.className = "outage";
+    item.className = "outage";
 
-        item.style.padding = "20px 25px";
+    item.style.padding = "20px 25px";
 
-        item.innerHTML = `
+    item.innerHTML = `
             <span>
                 <strong>${formatTime(outage.start)}</strong>
                 →
                 <strong>${formatTime(outage.end)}</strong>
             </span>
 
-            <span style="color: var(--red);">
+            <span style="color: var(--danger);">
                 No power
             </span>
         `;
 
-        todaySchedule.appendChild(item);
-    });
+    todaySchedule.appendChild(item);
+  });
 }
 
 /* =========================
@@ -298,72 +298,69 @@ function renderTodaySchedule() {
 ========================= */
 
 function updatePowerStatus() {
-    const now = new Date();
+  const now = new Date();
 
-    const currentMinutes = now.getHours() * 60 + now.getMinutes();
+  const currentMinutes = now.getHours() * 60 + now.getMinutes();
 
-    const today = getTodayName();
+  const today = getTodayName();
 
-    const outages = schedule[today];
+  const outages = schedule[today];
 
-    let currentOutage = null;
-    let upcomingOutage = null;
+  let currentOutage = null;
+  let upcomingOutage = null;
 
-    for (const outage of outages) {
-        const [startHour, startMinute] = outage.start.split(":").map(Number);
+  for (const outage of outages) {
+    const [startHour, startMinute] = outage.start.split(":").map(Number);
 
-        const [endHour, endMinute] = outage.end.split(":").map(Number);
+    const [endHour, endMinute] = outage.end.split(":").map(Number);
 
-        const start = startHour * 60 + startMinute;
+    const start = startHour * 60 + startMinute;
 
-        const end = endHour * 60 + endMinute;
+    const end = endHour * 60 + endMinute;
 
-        if (currentMinutes >= start && currentMinutes < end) {
-            currentOutage = outage;
-            break;
-        }
-
-        if (start > currentMinutes) {
-            if (
-                !upcomingOutage ||
-                start < timeToMinutes(upcomingOutage.start)
-            ) {
-                upcomingOutage = outage;
-            }
-        }
+    if (currentMinutes >= start && currentMinutes < end) {
+      currentOutage = outage;
+      break;
     }
 
-    if (currentOutage) {
-        powerStatus.textContent = "No Power";
-
-        statusMessage.textContent = `Power is expected back at ${formatTime(currentOutage.end)}.`;
-
-        statusCard.classList.add("power-off");
-
-        nextOutage.textContent = `Until ${formatTime(currentOutage.end)}`;
-
-        updateReturnCountdown(currentOutage.end);
-
-        return;
+    if (start > currentMinutes) {
+      if (!upcomingOutage || start < timeToMinutes(upcomingOutage.start)) {
+        upcomingOutage = outage;
+      }
     }
+  }
 
-    statusCard.classList.remove("power-off");
+  if (currentOutage) {
+    powerStatus.textContent = "No Power";
 
-    powerStatus.textContent = "Power Available";
+    statusMessage.textContent = `Power is expected back at ${formatTime(currentOutage.end)}.`;
 
-    if (upcomingOutage) {
-        statusMessage.textContent = "Your next scheduled outage is coming up.";
+    statusCard.classList.add("power-off");
 
-        nextOutage.textContent = `${formatTime(upcomingOutage.start)} – ${formatTime(upcomingOutage.end)}`;
+    nextOutage.textContent = `Until ${formatTime(currentOutage.end)}`;
 
-        updateCountdown(upcomingOutage.start);
-    } else {
-        statusMessage.textContent = "No more outages scheduled today.";
+    updateReturnCountdown(currentOutage.end);
 
-        nextOutage.textContent = "None today";
+    return;
+  }
 
-        countdown.textContent = "—";
-    }
+  statusCard.classList.remove("power-off");
+
+  powerStatus.textContent = "Power Available";
+
+  if (upcomingOutage) {
+    statusMessage.textContent = "Your next scheduled outage is coming up.";
+
+    nextOutage.textContent = `${formatTime(upcomingOutage.start)} – ${formatTime(upcomingOutage.end)}`;
+
+    updateCountdown(upcomingOutage.start);
+  } else {
+    statusMessage.textContent = "No more outages scheduled today.";
+
+    nextOutage.textContent = "None today";
+
+    countdown.textContent = "—";
+  }
 }
 
 /* =========================
@@ -371,9 +368,9 @@ function updatePowerStatus() {
 ========================= */
 
 function timeToMinutes(time) {
-    const [hours, minutes] = time.split(":").map(Number);
+  const [hours, minutes] = time.split(":").map(Number);
 
-    return hours * 60 + minutes;
+  return hours * 60 + minutes;
 }
 
 /* =========================
@@ -381,24 +378,24 @@ function timeToMinutes(time) {
 ========================= */
 
 function updateCountdown(targetTime) {
-    const now = new Date();
+  const now = new Date();
 
-    const [hours, minutes] = targetTime.split(":").map(Number);
+  const [hours, minutes] = targetTime.split(":").map(Number);
 
-    const target = new Date();
+  const target = new Date();
 
-    target.setHours(hours);
-    target.setMinutes(minutes);
-    target.setSeconds(0);
-    target.setMilliseconds(0);
+  target.setHours(hours);
+  target.setMinutes(minutes);
+  target.setSeconds(0);
+  target.setMilliseconds(0);
 
-    let difference = target - now;
+  let difference = target - now;
 
-    if (difference < 0) {
-        difference = 0;
-    }
+  if (difference < 0) {
+    difference = 0;
+  }
 
-    countdown.textContent = formatCountdown(difference);
+  countdown.textContent = formatCountdown(difference);
 }
 
 /* =========================
@@ -406,24 +403,24 @@ function updateCountdown(targetTime) {
 ========================= */
 
 function updateReturnCountdown(targetTime) {
-    const now = new Date();
+  const now = new Date();
 
-    const [hours, minutes] = targetTime.split(":").map(Number);
+  const [hours, minutes] = targetTime.split(":").map(Number);
 
-    const target = new Date();
+  const target = new Date();
 
-    target.setHours(hours);
-    target.setMinutes(minutes);
-    target.setSeconds(0);
-    target.setMilliseconds(0);
+  target.setHours(hours);
+  target.setMinutes(minutes);
+  target.setSeconds(0);
+  target.setMilliseconds(0);
 
-    let difference = target - now;
+  let difference = target - now;
 
-    if (difference < 0) {
-        difference = 0;
-    }
+  if (difference < 0) {
+    difference = 0;
+  }
 
-    countdown.textContent = formatCountdown(difference);
+  countdown.textContent = formatCountdown(difference);
 }
 
 /* =========================
@@ -431,19 +428,19 @@ function updateReturnCountdown(targetTime) {
 ========================= */
 
 function formatCountdown(milliseconds) {
-    const totalSeconds = Math.floor(milliseconds / 1000);
+  const totalSeconds = Math.floor(milliseconds / 1000);
 
-    const hours = Math.floor(totalSeconds / 3600);
+  const hours = Math.floor(totalSeconds / 3600);
 
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
 
-    const seconds = totalSeconds % 60;
+  const seconds = totalSeconds % 60;
 
-    return (
-        `${String(hours).padStart(2, "0")}:` +
-        `${String(minutes).padStart(2, "0")}:` +
-        `${String(seconds).padStart(2, "0")}`
-    );
+  return (
+    `${String(hours).padStart(2, "0")}:` +
+    `${String(minutes).padStart(2, "0")}:` +
+    `${String(seconds).padStart(2, "0")}`
+  );
 }
 
 /* =========================
@@ -451,27 +448,27 @@ function formatCountdown(milliseconds) {
 ========================= */
 
 clearSchedule.addEventListener("click", () => {
-    const confirmed = confirm("Clear your entire load-shedding schedule?");
+  const confirmed = confirm("Clear your entire load-shedding schedule?");
 
-    if (!confirmed) {
-        return;
-    }
+  if (!confirmed) {
+    return;
+  }
 
-    schedule = {
-        monday: [],
-        tuesday: [],
-        wednesday: [],
-        thursday: [],
-        friday: [],
-        saturday: [],
-        sunday: [],
-    };
+  schedule = {
+    monday: [],
+    tuesday: [],
+    wednesday: [],
+    thursday: [],
+    friday: [],
+    saturday: [],
+    sunday: [],
+  };
 
-    localStorage.removeItem("loadSheddingSchedule");
+  localStorage.removeItem("loadSheddingSchedule");
 
-    renderSchedule();
-    renderTodaySchedule();
-    updatePowerStatus();
+  renderSchedule();
+  renderTodaySchedule();
+  updatePowerStatus();
 });
 
 /* =========================
@@ -479,51 +476,51 @@ clearSchedule.addEventListener("click", () => {
 ========================= */
 
 planTask.addEventListener("click", () => {
-    const name = taskName.value.trim();
+  const name = taskName.value.trim();
 
-    const duration = Number(taskDuration.value);
+  const duration = Number(taskDuration.value);
 
-    if (!name) {
-        suggestionTitle.textContent = "Give your task a name.";
+  if (!name) {
+    suggestionTitle.textContent = "Give your task a name.";
 
-        suggestionText.textContent =
-            "For example: Charge my laptop or do the laundry.";
+    suggestionText.textContent =
+      "For example: Charge my laptop or do the laundry.";
 
-        return;
+    return;
+  }
+
+  const today = getTodayName();
+
+  const outages = schedule[today];
+
+  const windows = getPowerWindows(outages);
+
+  let suitableWindow = null;
+
+  for (const window of windows) {
+    const available = window.end - window.start;
+
+    if (available >= duration) {
+      suitableWindow = window;
+      break;
     }
+  }
 
-    const today = getTodayName();
+  if (!suitableWindow) {
+    suggestionTitle.textContent = "No suitable window today.";
 
-    const outages = schedule[today];
+    suggestionText.textContent = `${name} needs ${duration} minutes, but there isn't a long enough power window left today.`;
 
-    const windows = getPowerWindows(outages);
+    return;
+  }
 
-    let suitableWindow = null;
+  const start = minutesToTime(suitableWindow.start);
 
-    for (const window of windows) {
-        const available = window.end - window.start;
+  const end = minutesToTime(suitableWindow.start + duration);
 
-        if (available >= duration) {
-            suitableWindow = window;
-            break;
-        }
-    }
+  suggestionTitle.textContent = `${start} – ${end}`;
 
-    if (!suitableWindow) {
-        suggestionTitle.textContent = "No suitable window today.";
-
-        suggestionText.textContent = `${name} needs ${duration} minutes, but there isn't a long enough power window left today.`;
-
-        return;
-    }
-
-    const start = minutesToTime(suitableWindow.start);
-
-    const end = minutesToTime(suitableWindow.start + duration);
-
-    suggestionTitle.textContent = `${start} – ${end}`;
-
-    suggestionText.textContent = `A good time to ${name.toLowerCase()} is between ${start} and ${end}.`;
+  suggestionText.textContent = `A good time to ${name.toLowerCase()} is between ${start} and ${end}.`;
 });
 
 /* =========================
@@ -531,33 +528,33 @@ planTask.addEventListener("click", () => {
 ========================= */
 
 function getPowerWindows(outages) {
-    const windows = [];
+  const windows = [];
 
-    let previousEnd = 0;
+  let previousEnd = 0;
 
-    outages.forEach((outage) => {
-        const outageStart = timeToMinutes(outage.start);
+  outages.forEach((outage) => {
+    const outageStart = timeToMinutes(outage.start);
 
-        const outageEnd = timeToMinutes(outage.end);
+    const outageEnd = timeToMinutes(outage.end);
 
-        if (outageStart > previousEnd) {
-            windows.push({
-                start: previousEnd,
-                end: outageStart,
-            });
-        }
-
-        previousEnd = outageEnd;
-    });
-
-    if (previousEnd < 1440) {
-        windows.push({
-            start: previousEnd,
-            end: 1440,
-        });
+    if (outageStart > previousEnd) {
+      windows.push({
+        start: previousEnd,
+        end: outageStart,
+      });
     }
 
-    return windows;
+    previousEnd = outageEnd;
+  });
+
+  if (previousEnd < 1440) {
+    windows.push({
+      start: previousEnd,
+      end: 1440,
+    });
+  }
+
+  return windows;
 }
 
 /* =========================
@@ -565,13 +562,13 @@ function getPowerWindows(outages) {
 ========================= */
 
 function minutesToTime(minutes) {
-    const hours = Math.floor(minutes / 60);
+  const hours = Math.floor(minutes / 60);
 
-    const mins = minutes % 60;
+  const mins = minutes % 60;
 
-    return formatTime(
-        `${String(hours).padStart(2, "0")}:${String(mins).padStart(2, "0")}`,
-    );
+  return formatTime(
+    `${String(hours).padStart(2, "0")}:${String(mins).padStart(2, "0")}`,
+  );
 }
 
 /* =========================
@@ -588,5 +585,5 @@ updatePowerStatus();
 ========================= */
 
 setInterval(() => {
-    updatePowerStatus();
+  updatePowerStatus();
 }, 1000);
