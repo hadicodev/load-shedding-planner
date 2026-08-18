@@ -14,7 +14,6 @@ const statusLocationText = document.getElementById("statusLocationText");
 const startTime = document.getElementById("startTime");
 const endTime = document.getElementById("endTime");
 
-const areaInput = document.getElementById("area");
 const clearSchedule = document.getElementById("clearSchedule");
 
 const todayDate = document.getElementById("todayDate");
@@ -114,21 +113,10 @@ scheduleTypes.forEach((button) => {
 function loadCurrentSchedule() {
     scheduleEditor.classList.remove("hidden");
 
-    areaInput.value =
-        localStorage.getItem(`loadSheddingArea_${currentType}`) || "";
-
     renderSchedule();
     renderTodaySchedule();
     updatePowerStatus();
 }
-
-/* =========================
-   AREA
-========================= */
-
-areaInput.addEventListener("input", () => {
-    localStorage.setItem(`loadSheddingArea_${currentType}`, areaInput.value);
-});
 
 /* =========================
    SELECTED DAY
@@ -138,11 +126,48 @@ let selectedDay = "";
 let editingIndex = null;
 
 /* =========================
+   WEEKLY MODE
+========================= */
+
+let weeklyMode = false;
+
+/* =========================
+   WEEKLY SETTER BUTTON
+========================= */
+
+const weeklySetter = document.createElement("button");
+
+weeklySetter.type = "button";
+weeklySetter.className = "weekly-setter";
+weeklySetter.textContent = "Set Weekly Schedule";
+
+scheduleEditor.prepend(weeklySetter);
+
+/* =========================
+   OPEN WEEKLY SETTER
+========================= */
+
+weeklySetter.addEventListener("click", () => {
+    weeklyMode = true;
+    selectedDay = "";
+    editingIndex = null;
+
+    modalDay.textContent = "Every Day";
+
+    startTimePicker.reset();
+    endTimePicker.reset();
+
+    modal.classList.remove("hidden");
+});
+
+/* =========================
    OPEN MODAL
 ========================= */
 
 addButtons.forEach((button) => {
     button.addEventListener("click", () => {
+        weeklyMode = false;
+
         selectedDay = button.dataset.day;
         editingIndex = null;
 
@@ -161,11 +186,15 @@ addButtons.forEach((button) => {
 ========================= */
 
 closeModal.addEventListener("click", () => {
+    weeklyMode = false;
+
     modal.classList.add("hidden");
 });
 
 modal.addEventListener("click", (event) => {
     if (event.target === modal) {
+        weeklyMode = false;
+
         modal.classList.add("hidden");
     }
 });
@@ -185,19 +214,66 @@ saveOutage.addEventListener("click", () => {
         return;
     }
 
+    /* =========================
+       WEEKLY SCHEDULE
+    ========================= */
+
+    if (weeklyMode) {
+        const days = Object.keys(schedule);
+
+        days.forEach((day) => {
+            schedule[day].push({
+                start: startTime.value,
+                end: endTime.value,
+            });
+
+            schedule[day].sort((a, b) => {
+                return a.start.localeCompare(b.start);
+            });
+        });
+
+        saveSchedule();
+
+        weeklyMode = false;
+
+        modal.classList.add("hidden");
+
+        renderSchedule();
+        renderTodaySchedule();
+        updatePowerStatus();
+
+        return;
+    }
+
+    /* =========================
+       NORMAL SINGLE DAY
+    ========================= */
+
     if (editingIndex !== null) {
         schedule[selectedDay][editingIndex] = {
             start: startTime.value,
             end: endTime.value,
         };
     } else {
+        /*
+         * ADD NEW OUTAGE
+         *
+         * This pushes the new outage instead of
+         * replacing the existing one.
+         */
         schedule[selectedDay].push({
             start: startTime.value,
             end: endTime.value,
         });
     }
 
-    schedule[selectedDay].sort((a, b) => a.start.localeCompare(b.start));
+    /* =========================
+       SORT OUTAGES
+    ========================= */
+
+    schedule[selectedDay].sort((a, b) => {
+        return a.start.localeCompare(b.start);
+    });
 
     saveSchedule();
 
@@ -260,11 +336,15 @@ function renderSchedule() {
                         data-index="${index}"
                         aria-label="Edit outage"
                     >
-                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <svg
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
                             <path
                                 fill-rule="evenodd"
                                 clip-rule="evenodd"
-                                d="M20.8477 1.87868C19.6761 0.707109 17.7766 0.707105 16.605 1.87868L2.44744 16.0363C2.02864 16.4551 1.74317 16.9885 1.62702 17.5692L1.03995 20.5046C0.760062 21.904 1.9939 23.1379 3.39334 22.858L6.32868 22.2709C6.90945 22.1548 7.44285 21.8693 7.86165 21.4505L22.0192 7.29289C23.1908 6.12132 23.1908 4.22183 22.0192 3.05025L20.8477 1.87868ZM18.0192 3.29289C18.4098 2.90237 19.0429 2.90237 19.4335 3.29289L20.605 4.46447C20.9956 4.85499 20.9956 5.48815 20.605 5.87868L17.9334 8.55027L15.3477 5.96448L18.0192 3.29289ZM13.9334 7.3787L3.86165 17.4505C3.72205 17.5901 3.6269 17.7679 3.58818 17.9615L3.00111 20.8968L5.93645 20.3097C6.13004 20.271 6.30784 20.1759 6.44744 20.0363L16.5192 9.96448L13.9334 7.3787Z"
+                                d="M20.8477 1.87868C19.6761 0.707109 17.7761 0.707105 16.605 1.87868L2.44744 16.0363C2.02864 16.4551 1.74317 16.9885 1.62702 17.5692L1.03995 20.5046C0.760062 21.904 1.9939 23.1379 3.39334 22.858L6.32868 22.2709C6.90945 22.1548 7.44285 21.8699 7.86165 21.4505L22.0192 7.29289C23.1908 6.12132 23.1908 4.22183 22.0192 3.05025L20.8477 1.87868ZM18.0192 3.29289C18.4098 2.90237 19.0429 2.90237 19.4335 3.29289L20.605 4.46447C20.9956 4.85499 20.9956 5.48815 20.605 5.87868L17.9334 8.55027L15.3477 5.96448L18.0192 3.29289ZM13.9334 7.3787L3.86165 17.4505C3.72205 17.7679 3.6269 17.7679 3.58818 17.9615L3.00111 20.8968L5.93645 20.3097C6.13004 20.271 6.30784 20.1759 6.44744 20.0363L16.5192 9.96448L13.9334 7.3787ZM13.9334 7.3787L16.5192 9.96448L13.9334 7.3787Z"
                                 fill="currentColor"
                             />
                         </svg>
@@ -294,6 +374,7 @@ function renderSchedule() {
 
 function addDeleteListeners() {
     const deleteButtons = document.querySelectorAll(".delete-outage");
+
     const editButtons = document.querySelectorAll(".edit-outage");
 
     deleteButtons.forEach((button) => {
@@ -313,6 +394,8 @@ function addDeleteListeners() {
 
     editButtons.forEach((button) => {
         button.addEventListener("click", () => {
+            weeklyMode = false;
+
             const day = button.dataset.day;
             const index = Number(button.dataset.index);
 
@@ -508,6 +591,7 @@ function updatePowerStatus() {
     if (!currentOutage) {
         for (const outage of todayOutages) {
             const start = timeToMinutes(outage.start);
+
             let end = timeToMinutes(outage.end);
 
             if (end <= start) {
@@ -543,19 +627,13 @@ function updatePowerStatus() {
 
         const isOvernight = endMinutes <= timeToMinutes(currentOutage.start);
 
-        if (isOvernight) {
-            statusMessage.textContent = `Power is expected back at ${formatTime(currentOutage.end)}.`;
+        statusMessage.textContent = `Power is expected back at ${formatTime(
+            currentOutage.end,
+        )}.`;
 
-            nextOutage.textContent = `Until ${formatTime(currentOutage.end)}`;
+        nextOutage.textContent = `Until ${formatTime(currentOutage.end)}`;
 
-            updateReturnCountdown(currentOutage.end, true);
-        } else {
-            statusMessage.textContent = `Power is expected back at ${formatTime(currentOutage.end)}.`;
-
-            nextOutage.textContent = `Until ${formatTime(currentOutage.end)}`;
-
-            updateReturnCountdown(currentOutage.end);
-        }
+        updateReturnCountdown(currentOutage.end, isOvernight);
 
         return;
     }
@@ -571,7 +649,9 @@ function updatePowerStatus() {
     if (upcomingOutage) {
         statusMessage.textContent = "Your next scheduled outage is coming up.";
 
-        nextOutage.textContent = `${formatTime(upcomingOutage.start)} – ${formatTime(upcomingOutage.end)}`;
+        nextOutage.textContent = `${formatTime(upcomingOutage.start)} – ${formatTime(
+            upcomingOutage.end,
+        )}`;
 
         updateCountdown(upcomingOutage.start);
     } else {
@@ -683,10 +763,6 @@ clearSchedule.addEventListener("click", () => {
     schedules[currentType] = schedule;
 
     localStorage.setItem("loadSheddingSchedules", JSON.stringify(schedules));
-
-    localStorage.removeItem(`loadSheddingArea_${currentType}`);
-
-    areaInput.value = "";
 
     renderSchedule();
     renderTodaySchedule();
@@ -814,11 +890,30 @@ function createTimePicker(input) {
     display.className = "time-picker-input";
 
     display.innerHTML = `
-        <span class="time-picker-placeholder">Select time</span>
+        <span class="time-picker-placeholder">
+            Select time
+        </span>
 
-        <svg class="time-picker-icon" viewBox="0 0 24 24" fill="none">
-            <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/>
-            <path d="M12 7V12L15 14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        <svg
+            class="time-picker-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+        >
+            <circle
+                cx="12"
+                cy="12"
+                r="9"
+                stroke="currentColor"
+                stroke-width="1.8"
+            />
+
+            <path
+                d="M12 7V12L15 14"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+            />
         </svg>
     `;
 
@@ -830,16 +925,29 @@ function createTimePicker(input) {
 
     menu.innerHTML = `
         <div class="time-picker-columns">
-            <div class="time-picker-column" data-part="hour"></div>
-            <div class="time-picker-column" data-part="minute"></div>
-            <div class="time-picker-column" data-part="period"></div>
+            <div
+                class="time-picker-column"
+                data-part="hour"
+            ></div>
+
+            <div
+                class="time-picker-column"
+                data-part="minute"
+            ></div>
+
+            <div
+                class="time-picker-column"
+                data-part="period"
+            ></div>
         </div>
     `;
 
     wrapper.appendChild(menu);
 
     const hourColumn = menu.querySelector('[data-part="hour"]');
+
     const minuteColumn = menu.querySelector('[data-part="minute"]');
+
     const periodColumn = menu.querySelector('[data-part="period"]');
 
     /* =========================
@@ -850,6 +958,7 @@ function createTimePicker(input) {
         const option = document.createElement("button");
 
         option.type = "button";
+
         option.className = "time-picker-option";
 
         option.textContent = String(hour).padStart(2, "0");
@@ -871,6 +980,7 @@ function createTimePicker(input) {
         const option = document.createElement("button");
 
         option.type = "button";
+
         option.className = "time-picker-option";
 
         option.textContent = String(minute).padStart(2, "0");
@@ -892,6 +1002,7 @@ function createTimePicker(input) {
         const option = document.createElement("button");
 
         option.type = "button";
+
         option.className = "time-picker-option";
 
         option.textContent = period;
@@ -908,6 +1019,10 @@ function createTimePicker(input) {
     let selectedHour = null;
     let selectedMinute = null;
     let selectedPeriod = null;
+
+    /* =========================
+       SELECT PART
+    ========================= */
 
     function selectPart(part, value) {
         if (part === "hour") {
@@ -952,6 +1067,10 @@ function createTimePicker(input) {
         }
     }
 
+    /* =========================
+       UPDATE PICKER
+    ========================= */
+
     function updatePicker() {
         hourColumn.querySelectorAll(".time-picker-option").forEach((option) => {
             option.classList.toggle(
@@ -979,6 +1098,10 @@ function createTimePicker(input) {
             });
     }
 
+    /* =========================
+       UPDATE DISPLAY
+    ========================= */
+
     function updateDisplay() {
         if (
             selectedHour === null ||
@@ -990,7 +1113,9 @@ function createTimePicker(input) {
                     Select time
                 </span>
 
-                <span class="time-picker-arrow">▼</span>
+                <span class="time-picker-arrow">
+                    ▼
+                </span>
             `;
 
             return;
@@ -1003,12 +1128,33 @@ function createTimePicker(input) {
                 ).padStart(2, "0")} ${selectedPeriod}
             </span>
 
-            <svg class="time-picker-icon" viewBox="0 0 24 24" fill="none">
-                <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/>
-                <path d="M12 7V12L15 14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            <svg
+                class="time-picker-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+            >
+                <circle
+                    cx="12"
+                    cy="12"
+                    r="9"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                />
+
+                <path
+                    d="M12 7V12L15 14"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                />
             </svg>
         `;
     }
+
+    /* =========================
+       OPEN PICKER
+    ========================= */
 
     function openPicker() {
         document.querySelectorAll(".time-picker-menu.open").forEach((other) => {
@@ -1022,13 +1168,23 @@ function createTimePicker(input) {
         });
 
         menu.classList.add("open");
+
         display.classList.add("active");
     }
 
+    /* =========================
+       CLOSE PICKER
+    ========================= */
+
     function closePicker() {
         menu.classList.remove("open");
+
         display.classList.remove("active");
     }
+
+    /* =========================
+       DISPLAY CLICK
+    ========================= */
 
     display.addEventListener("click", () => {
         if (menu.classList.contains("open")) {
@@ -1057,7 +1213,9 @@ function createTimePicker(input) {
         const [hours, minutes] = input.value.split(":").map(Number);
 
         selectedHour = hours % 12 || 12;
+
         selectedMinute = minutes;
+
         selectedPeriod = hours >= 12 ? "PM" : "AM";
 
         updatePicker();
@@ -1097,6 +1255,7 @@ function createTimePicker(input) {
 ========================= */
 
 const startTimePicker = createTimePicker(startTime);
+
 const endTimePicker = createTimePicker(endTime);
 
 /* =========================

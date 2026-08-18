@@ -622,27 +622,6 @@ nav a:hover {
     display: none;
 }
 
-/* =========================
-   AREA
-========================= */
-
-.area-box {
-    display: grid;
-
-    grid-template-columns: 1fr 1fr;
-
-    gap: 40px;
-
-    padding: 25px 0;
-
-    margin-bottom: 25px;
-
-    border-top: 1px solid var(--border);
-
-    border-bottom: 1px solid var(--border);
-}
-
-.area-box label,
 .task-form label,
 .time-inputs label {
     display: block;
@@ -654,19 +633,22 @@ nav a:hover {
     font-weight: 650;
 }
 
-.area-box p {
-    color: var(--muted);
+/* =========================
+   WEEKLY SETTER
+========================= */
 
-    font-size: 0.82rem;
-}
+.weekly-setter {
+    display: flex;
 
-input,
-select {
+    align-items: center;
+    justify-content: center;
+
     width: 100%;
+    min-height: 50px;
 
-    height: 46px;
+    margin-bottom: 25px;
 
-    padding: 0 13px;
+    padding: 0 18px;
 
     border: 1px solid var(--border);
 
@@ -674,16 +656,25 @@ select {
 
     color: var(--text);
 
-    outline: none;
+    font-size: 0.85rem;
+    font-weight: 650;
 
-    border-radius: 0;
-
-    transition: border-color 0.2s ease;
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease;
 }
 
-input:focus,
-select:focus {
-    border-color: var(--accent);
+.weekly-setter:hover {
+    background: var(--surface-alt);
+
+    border-color: #464b48;
+
+    color: var(--accent);
+}
+
+.weekly-setter:active {
+    background: var(--surface);
 }
 
 /* =========================
@@ -1072,12 +1063,6 @@ footer {
 
     .status-card {
         max-width: 600px;
-    }
-
-    .area-box {
-        grid-template-columns: 1fr;
-
-        gap: 18px;
     }
 
     .planner-grid {
