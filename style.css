@@ -774,6 +774,40 @@ select:focus {
     font-weight: 600;
 }
 
+.edit-outage {
+    border: 0;
+
+    background: transparent;
+
+    color: var(--muted);
+
+    font-size: 0.72rem;
+
+    font-weight: 700;
+
+    letter-spacing: 0.05em;
+
+    transition: color 0.2s ease;
+}
+
+.edit-outage svg {
+    width: 15px;
+    height: 15px;
+    display: block;
+}
+
+.edit-outage:hover {
+    color: var(--accent);
+}
+
+.outage-actions {
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+}
+
 .delete-outage {
     border: 0;
 
@@ -1193,17 +1227,6 @@ footer {
     font-size: 0.9rem;
 }
 
-.time-picker-arrow {
-    color: var(--muted);
-    font-size: 0.8rem;
-
-    transition: transform 0.2s ease;
-}
-
-.time-picker-input.active .time-picker-arrow {
-    transform: rotate(180deg);
-}
-
 .time-picker-menu {
     position: absolute;
 
@@ -1316,4 +1339,26 @@ footer {
     .time-picker-column {
         height: 210px;
     }
+}
+
+.time-picker-icon {
+    width: 19px;
+    height: 19px;
+
+    flex-shrink: 0;
+
+    color: var(--muted);
+
+    transition:
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.time-picker-input:hover .time-picker-icon {
+    color: var(--text);
+}
+
+.time-picker-input.active .time-picker-icon {
+    color: var(--accent);
+    transform: rotate(-10deg);
 }

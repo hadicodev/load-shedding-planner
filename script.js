@@ -131,12 +131,20 @@ areaInput.addEventListener("input", () => {
 });
 
 /* =========================
+   SELECTED DAY
+========================= */
+
+let selectedDay = "";
+let editingIndex = null;
+
+/* =========================
    OPEN MODAL
 ========================= */
 
 addButtons.forEach((button) => {
     button.addEventListener("click", () => {
         selectedDay = button.dataset.day;
+        editingIndex = null;
 
         modalDay.textContent =
             selectedDay.charAt(0).toUpperCase() + selectedDay.slice(1);
@@ -147,12 +155,6 @@ addButtons.forEach((button) => {
         modal.classList.remove("hidden");
     });
 });
-
-/* =========================
-   SELECTED DAY
-========================= */
-
-let selectedDay = "";
 
 /* =========================
    CLOSE MODAL
@@ -183,16 +185,25 @@ saveOutage.addEventListener("click", () => {
         return;
     }
 
-    schedule[selectedDay].push({
-        start: startTime.value,
-        end: endTime.value,
-    });
+    if (editingIndex !== null) {
+        schedule[selectedDay][editingIndex] = {
+            start: startTime.value,
+            end: endTime.value,
+        };
+    } else {
+        schedule[selectedDay].push({
+            start: startTime.value,
+            end: endTime.value,
+        });
+    }
 
     schedule[selectedDay].sort((a, b) => a.start.localeCompare(b.start));
 
     saveSchedule();
 
     modal.classList.add("hidden");
+
+    editingIndex = null;
 
     renderSchedule();
     renderTodaySchedule();
@@ -242,14 +253,32 @@ function renderSchedule() {
                     ${formatTime(outage.start)} – ${formatTime(outage.end)}
                 </span>
 
-                <button
-                    class="delete-outage"
-                    data-day="${day}"
-                    data-index="${index}"
-                    aria-label="Delete outage"
-                >
-                    ×
-                </button>
+                <div class="outage-actions">
+                    <button
+                        class="edit-outage"
+                        data-day="${day}"
+                        data-index="${index}"
+                        aria-label="Edit outage"
+                    >
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                fill-rule="evenodd"
+                                clip-rule="evenodd"
+                                d="M20.8477 1.87868C19.6761 0.707109 17.7766 0.707105 16.605 1.87868L2.44744 16.0363C2.02864 16.4551 1.74317 16.9885 1.62702 17.5692L1.03995 20.5046C0.760062 21.904 1.9939 23.1379 3.39334 22.858L6.32868 22.2709C6.90945 22.1548 7.44285 21.8693 7.86165 21.4505L22.0192 7.29289C23.1908 6.12132 23.1908 4.22183 22.0192 3.05025L20.8477 1.87868ZM18.0192 3.29289C18.4098 2.90237 19.0429 2.90237 19.4335 3.29289L20.605 4.46447C20.9956 4.85499 20.9956 5.48815 20.605 5.87868L17.9334 8.55027L15.3477 5.96448L18.0192 3.29289ZM13.9334 7.3787L3.86165 17.4505C3.72205 17.5901 3.6269 17.7679 3.58818 17.9615L3.00111 20.8968L5.93645 20.3097C6.13004 20.271 6.30784 20.1759 6.44744 20.0363L16.5192 9.96448L13.9334 7.3787Z"
+                                fill="currentColor"
+                            />
+                        </svg>
+                    </button>
+
+                    <button
+                        class="delete-outage"
+                        data-day="${day}"
+                        data-index="${index}"
+                        aria-label="Delete outage"
+                    >
+                        ×
+                    </button>
+                </div>
             `;
 
             container.appendChild(outageElement);
@@ -260,11 +289,12 @@ function renderSchedule() {
 }
 
 /* =========================
-   DELETE OUTAGE
+   DELETE / EDIT OUTAGE
 ========================= */
 
 function addDeleteListeners() {
     const deleteButtons = document.querySelectorAll(".delete-outage");
+    const editButtons = document.querySelectorAll(".edit-outage");
 
     deleteButtons.forEach((button) => {
         button.addEventListener("click", () => {
@@ -278,6 +308,28 @@ function addDeleteListeners() {
             renderSchedule();
             renderTodaySchedule();
             updatePowerStatus();
+        });
+    });
+
+    editButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+            const day = button.dataset.day;
+            const index = Number(button.dataset.index);
+
+            const outage = schedule[day][index];
+
+            selectedDay = day;
+            editingIndex = index;
+
+            modalDay.textContent = day.charAt(0).toUpperCase() + day.slice(1);
+
+            startTime.value = outage.start;
+            endTime.value = outage.end;
+
+            startTimePicker.load(outage.start);
+            endTimePicker.load(outage.end);
+
+            modal.classList.remove("hidden");
         });
     });
 }
@@ -439,7 +491,6 @@ function updatePowerStatus() {
         const start = timeToMinutes(outage.start);
         const end = timeToMinutes(outage.end);
 
-        // Previous-day outage continues into today
         if (end < start && currentMinutes < end) {
             currentOutage = {
                 start: outage.start,
@@ -459,7 +510,6 @@ function updatePowerStatus() {
             const start = timeToMinutes(outage.start);
             let end = timeToMinutes(outage.end);
 
-            // Overnight outage
             if (end <= start) {
                 end += 1440;
             }
@@ -765,7 +815,11 @@ function createTimePicker(input) {
 
     display.innerHTML = `
         <span class="time-picker-placeholder">Select time</span>
-        <span class="time-picker-arrow">▼</span>
+
+        <svg class="time-picker-icon" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/>
+            <path d="M12 7V12L15 14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
     `;
 
     wrapper.appendChild(display);
@@ -888,7 +942,11 @@ function createTimePicker(input) {
                 `${String(hour24).padStart(2, "0")}:` +
                 `${String(selectedMinute).padStart(2, "0")}`;
 
-            input.dispatchEvent(new Event("change", { bubbles: true }));
+            input.dispatchEvent(
+                new Event("change", {
+                    bubbles: true,
+                }),
+            );
 
             updateDisplay();
         }
@@ -945,7 +1003,10 @@ function createTimePicker(input) {
                 ).padStart(2, "0")} ${selectedPeriod}
             </span>
 
-            <span class="time-picker-arrow">▼</span>
+            <svg class="time-picker-icon" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/>
+                <path d="M12 7V12L15 14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
         `;
     }
 
@@ -1020,6 +1081,14 @@ function createTimePicker(input) {
 
             closePicker();
         },
+
+        load(time) {
+            input.value = time;
+
+            loadValue();
+
+            closePicker();
+        },
     };
 }
 
@@ -1060,6 +1129,7 @@ statusLocation.addEventListener("click", () => {
     const newType = currentType === "home" ? "shop" : "home";
 
     currentType = newType;
+
     schedule = schedules[currentType];
 
     localStorage.setItem("currentScheduleType", currentType);
